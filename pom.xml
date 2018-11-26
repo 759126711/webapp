@@ -35,26 +35,72 @@
                         <!-- Whether the created archive will contain these two Maven files -->
                         <addMavenDescriptor>false</addMavenDescriptor>
                     </archive>
-                    <warName>solrT</warName>
+                    <warName>webapp</warName>
+                    <!-- 指定要拷贝到WEB-INF目录的web.xml文件源位置 -->
+                    <webXml> src/main/resources/web/web.xml</webXml>
+
+                    <!--webResources是编译时相对classes文件夹的内容-->
                     <webResources>
+                        <!-- filtering=true表示如果配置中有"${exp}"变量表达式，则会替换为表达式的实际值 -->
                         <resource>
-                            <directory>src/main/resources/${package.environment}/</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
+                            <directory>src/main/resources/web/jsp</directory>
+                            <targetPath>/jsp</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                        <!-- 把src/main/resources/web下面的内容放到war包的static文件夹下面，static文件夹与WEB-INF同级-->
+                        <resource>
+                            <directory>src/main/resources/web/static</directory>
+                            <targetPath>/static</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                        <!-- 首页index.jsp可以单独放到一个文件夹下面，然后再指定拷贝到webapp-1.0-SNAPSHOT指定文件夹-->
+                        <resource>
+                            <directory>src/main/resources/web/indexpage</directory>
+                            <targetPath>/</targetPath>
                             <filtering>true</filtering>
                         </resource>
                         <resource>
-                            <directory>src/main/resources/${package.webxml}</directory>
-                            <targetPath>WEB-INF</targetPath>
+                            <directory>src/main/resources/web/exclude</directory>
+                            <targetPath>/exclude</targetPath>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
+
+                    <!--  <warResources> warResources是编译后，拷贝classes下面的内容到webapp-1.0-SNAPSHOT文件夹的指定目录的对应配置-->
+
+                    <!--
+                    指定resources下面的编译后的某些文件或文件夹在生成war包时不要从classes下拷贝到webapp-1.0-SNAPSHOT里面，
+                    但是如果旧的war包里面已经有，而且mvn package之前又没有执行mvn clean 清理，
+                    那么war包里面还是会包含这些文件或文件夹。
+                    路径都是相对pom.xml文件的位置。
+
+                    记得还有个前提，就是webResources里面要配置编译时把整个exclude文件夹拷贝到webapp-1.0-SNAPSHOT下面，
+                    然后才能有排除，否则即使指明exclude下某个文件被排除，实际上所有exclude下面的文件都会被排除
+                    -->
+
                     <warSourceExcludes>
-                        src/main/resources/dev/test.txt,src/main/resources/qa/test.txt
+                        src/main/resources/web/exclude/readme.txt
                     </warSourceExcludes>
-                    <!-- 指定resources下面的某些文件在编译时不要放到 -->
-                    <packagingExcludes>             WEB-INF/conf/**,WEB-INF/classes/dev/**,WEB-INF/classes/qa/**,WEB-INF/test.txt,
-                        WEB-INF/classes/test.txt,WEB-INF/classes/web.xml
-                    </packagingExcludes>
+
+                        <!-- 默认放到pom.xml所在目录下 -->
+                    <warSourceIncludes>
+                            src/main/resources/web/indexpage/index.jsp
+                    </warSourceIncludes>
+
+                     <packagingIncludes>
+                            WEB-INF/classes/web/web.xml
+                     </packagingIncludes>
+                    <!-- 指定webapp-1.0-SNAPSHOT文件夹里面的某些文件或文件夹在生成war包时不要放到war包里面，
+                         不管以前的war包是否有，也即即使没有执行mvn clean 清理，
+                         也会从旧的war包里面排除掉这些文件;
+                         可以用正则表达式匹配，多个文件相对路径用“,”隔开
+                    -->
+                        <packagingExcludes>
+                            WEB-INF/classes/web/exclude/readme.txt
+                        </packagingExcludes>
+
+
+
                 </configuration>
             </plugin>
         </plugins>
