@@ -15,7 +15,7 @@ public class HelloServlet extends HttpServlet {
         //可以调数据库的内容
         //去数据库查询到数据之后
         //返回前端
-        String msg = "我想大声告诉你";
+        String msg = "i am test servlet ! welcom!";
         resp.setContentType("text/html;charset=utf-8");
         PrintWriter writer = resp.getWriter();
         writer.write(
