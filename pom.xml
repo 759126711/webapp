@@ -82,7 +82,7 @@
                         src/main/resources/web/exclude/readme.txt
                     </warSourceExcludes>
 
-                        <!-- 默认放到pom.xml所在目录下 -->
+                        <!-- 默认放到pom.xml所在目录下，不要随便试用include指令 否则其他没有指定的include的文件不会被加进来
                     <warSourceIncludes>
                             src/main/resources/web/indexpage/index.jsp
                     </warSourceIncludes>
@@ -90,6 +90,7 @@
                      <packagingIncludes>
                             WEB-INF/classes/web/web.xml
                      </packagingIncludes>
+                      -->
                     <!-- 指定webapp-1.0-SNAPSHOT文件夹里面的某些文件或文件夹在生成war包时不要放到war包里面，
                          不管以前的war包是否有，也即即使没有执行mvn clean 清理，
                          也会从旧的war包里面排除掉这些文件;
